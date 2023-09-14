@@ -20,7 +20,7 @@ app.use(express.static('public'));
 
 const mysql = require('mysql')
 
-const bodyParser = require('bodyParser')
+const bodyParser = require('body-parser')
 app.use(bodyParser.urlencoded({extended: true}))
 
 //create database connection
@@ -36,7 +36,20 @@ con.connect(function(err) {
     console.log("Connected to joga_mysql db");
 })
 
+//show all articles - index page
+app.get('/', (req, res) => {
+    let query = "SELECT * FROM article";
+    let articles = []
+    con.query(query, (err, result) => {
+        if (err) throw err;
+        articles = result
+        res.render('index', {
+            articles: articles
+        })
+    })
+})
+
 //app start point
-app.listen(3000, () => {
-    console.log('App us started at http://localhost:3000');
+app.listen(4000, () => {
+    console.log('App us started at http://localhost:4000');
 })
