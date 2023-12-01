@@ -3,6 +3,9 @@ const express = require('express')
 const app = express()
 
 const path = require('path')
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: true}));
+
 //add template engine
 const hbs = require('express-handlebars');
 //setup template engine directory and files extensions
