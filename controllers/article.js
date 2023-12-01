@@ -19,19 +19,20 @@ const getAllArticles =  (req,res) => {
 
 
 //show article by this slug
-const getArticleBySlug = ('/article/:slug',(req,res) => {
-    let query=`SELECT * FROM article 
-    inner join author on slug="${req.params.slug}" AND article.author_id = author.id`
-    let article
-    con.query(query, (err, result) => {
-        if (err) throw err;
-        article = result
-        console.log(article)
-        res.render('article', {
-            article:article
-        })
+const getArticleBySlug = (req,res) => {
+    Article.getBySlug(req.params.slug, (err, data) => {
+        if (err) {
+            res.status(500).send({
+                message : err.message || 'Some error occurred retrieving article data'
+            })
+        } else {
+            console.log(data)
+            res.render('article', {
+                article: data
+            })
+        }
     })
-})
+};
 
 // export controller functions
 module.exports = {
