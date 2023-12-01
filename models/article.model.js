@@ -51,21 +51,72 @@ Article.getBySlug = (slug, result) => {
 }
 
 Article.createNew =(newArticle,result) => {
-    let query = `INSERT INTO article SET
-                        name = "${newArticle.name}",
+    let query = `INSERT INTO article
+                 SET name = "${newArticle.name}",
                         slug = "${newArticle.slug}",
                         image = "${newArticle.image}",
                         body = "${newArticle.body}",
                         published = "${newArticle.published}",
                         author_id = "${newArticle.author_id}"`
-    con.query(query,(err,res) =>{
-        if(err) {
+    con.query(query, (err, res) => {
+        if (err) {
             console.log("error: ", err);
-            result(err,null);
+            result(err, null);
             return;
         }
         console.log("created article: ", {id: res.insertId, ...newArticle});
     });
+}
+
+Article.showArticle = (articleId, result) => {
+    let articleQuery = `SELECT *
+                            FROM article
+                            WHERE id = "${articleId}"`
+
+    let authorQuery = `SELECT *
+                           FROM author`
+    let article
+    let authors = []
+
+    con.query(articleQuery, (err, res) => {
+        if (err) {
+            console.log('error: ', err)
+            result(err, null)
+            return
+        }
+        article = res
+        console.log('article: ', article)
+
+        con.query(authorQuery, (err, res) => {
+            if (err) {
+                console.log('error: ', err)
+                result(err, null)
+                return
+            }
+            authors = res
+            console.log('authors: ', authors)
+            result(null, article, authors)
+        })
+    })
+}
+Article.editArticle = (articleId, editedArticle, result) => {
+    let query = `UPDATE article
+                     SET name      = "${editedArticle.name}",
+                         slug      = "${editedArticle.slug}",
+                         image     = "${editedArticle.image}",
+                         body      = "${editedArticle.body}",
+                         author_id = "${editedArticle.author_id}"
+                     WHERE id = ${articleId}`
+
+    con.query(query, (err, res) => {
+        if (err) {
+            console.log('error: ', err)
+            result(err, null)
+            return
+        }
+        console.log('edited article: ', {id: res.insertId, ...editedArticle})
+        result(null, {id: res.insertId, ...editedArticle})
+    })
 }
 
 module.exports = Article;

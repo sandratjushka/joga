@@ -55,10 +55,48 @@ const createNewArticle = (req, res) => {
             })
         } else {
             console.log(data)
-            res.redirect('/')
+            res.redirect(`/article/${newArticle.slug}`)
         }
     })
 };
+
+const updateArticle = (req, res) => {
+    console.log(req.method)
+    console.log('update article')
+    if (req.method === 'GET') {
+        Article.showArticle(req.params.id, (err, article, authors) => {
+            if (err) {
+                res.status(500).send({
+                    message: err.message || 'An error occurred retrieving article data'
+                })
+            } else {
+                console.log(article, authors)
+                res.render('edit_article', {
+                    article: article,
+                    authors: authors
+                })
+            }
+        })
+    } else if (req.method === "POST") {
+        const editedArticle = new Article({
+            name: req.body.name,
+            slug: req.body.slug,
+            image: req.body.image,
+            body: req.body.body,
+            author_id: req.body.author
+        })
+        Article.editArticle(req.params.id, editedArticle, (err, data) => {
+            if (err) {
+                res.status(500).send({
+                    message: err.message || 'An error occurred retrieving article data'
+                })
+            } else {
+                console.log(data)
+                res.redirect(`/article/${editedArticle.slug}`)
+            }
+        })
+    }
+}
 
 //display article form
 const showNewArticleForm = (req, res) => {
@@ -71,4 +109,5 @@ module.exports = {
     getArticleBySlug,
     createNewArticle,
     showNewArticleForm,
+    updateArticle,
 };

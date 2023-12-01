@@ -9,14 +9,13 @@ const Author = (author) => {
 };
 
 Author.getName = (author_id, result) => {
-    let article_query = `SELECT * FROM article, author WHERE author.id='${author_id}' AND article.author_id=author.id;`
-
-    let author_query = `SELECT author_name FROM author WHERE author.id=\'${author_id}';`
+    let articleQuery = `SELECT * FROM article, author WHERE author.author_id='${author_id}' AND article.author_id=author.author_id;`
+    let authorQuery = `SELECT author_name FROM author WHERE author.author_id=\'${author_id}';`
 
     let author
     let articles = []
 
-    con.query (article_query,(err, res) => {
+    con.query (articleQuery,(err, res) => {
         if (err) {
             console.log("error: ", err);
             result(err, null);
@@ -26,7 +25,7 @@ Author.getName = (author_id, result) => {
         articles = res
         console.log("articles: ", articles);
 
-        con.query(author_query, (err, res) => {
+        con.query(authorQuery, (err, res) => {
             if (err) {
                 console.log('error: ', err)
                 result(err, null)

@@ -9,6 +9,8 @@ router.get('/', articleController.getAllArticles);
 router.get('/:slug', articleController.getArticleBySlug);
 router.get('/article/create', articleController.showNewArticleForm);
 router.post('/create', articleController.createNewArticle);
+router.get('/article/edit/:id', articleController.updateArticle)
+router.post('/article/edit/:id', articleController.updateArticle)
 
 // export article router for using in default application file
 module.exports = router;
